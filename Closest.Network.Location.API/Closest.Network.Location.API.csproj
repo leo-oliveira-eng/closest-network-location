@@ -15,7 +15,6 @@
     <Folder Include="Data\Contracts\" />
     <Folder Include="Data\Mapping\" />
     <Folder Include="Data\Repositories\" />
-    <Folder Include="Models\" />
     <Folder Include="Services\Dtos\" />
     <Folder Include="Services\ExternalServices\Contracts\" />
     <Folder Include="Settings\" />
