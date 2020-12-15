@@ -10,6 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Closest.Network.Location.API.Data.Mapping;
+using Closest.Network.Location.API.Settings;
+using Microsoft.Extensions.Options;
+using Closest.Network.Location.API.Settings.Contracts;
 
 namespace Closest.Network.Location.API
 {
@@ -25,6 +29,15 @@ namespace Closest.Network.Location.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddMvc();
+
+            services.Configure<ClosestNetworkLocationSettings>(Configuration.GetSection(nameof(ClosestNetworkLocationSettings)));
+
+            services.AddSingleton<IClosestNetworkLocationSettings>(sp =>
+                sp.GetRequiredService<IOptions<ClosestNetworkLocationSettings>>().Value);
+
+            GasStationMapping.MapGasStation();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

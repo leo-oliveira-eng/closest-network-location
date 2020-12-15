@@ -9,15 +9,13 @@
   <ItemGroup>
     <PackageReference Include="Message.Response.Maybe" Version="1.0.0-preview-2" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="MongoDB.Driver" Version="2.11.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Contracts\" />
-    <Folder Include="Data\Mapping\" />
-    <Folder Include="Data\Repositories\" />
     <Folder Include="Services\Dtos\" />
     <Folder Include="Services\ExternalServices\Contracts\" />
-    <Folder Include="Settings\" />
   </ItemGroup>
 
 
