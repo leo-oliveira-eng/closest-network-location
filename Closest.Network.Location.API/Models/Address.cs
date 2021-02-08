@@ -123,14 +123,13 @@ namespace Closest.Network.Location.API.Models
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
+            if (obj is null)
                 return false;
 
             else if (!(obj is Address))
                 return false;
 
             return StreetAddress == ((Address)obj).StreetAddress
-                && (Complement == ((Address)obj).Complement)
                 && (Cep == ((Address)obj).Cep)
                 && (City == ((Address)obj).City)
                 && (UF == ((Address)obj).UF);
@@ -138,7 +137,6 @@ namespace Closest.Network.Location.API.Models
 
         public override int GetHashCode()
             => StreetAddress.GetHashCode()
-                ^ Complement.GetHashCode()
                 ^ Cep.GetHashCode()
                 ^ City.GetHashCode()
                 ^ UF.GetHashCode();
