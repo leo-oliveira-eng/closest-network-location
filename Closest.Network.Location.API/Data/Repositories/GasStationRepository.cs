@@ -1,6 +1,8 @@
 ﻿using Closest.Network.Location.API.Data.Contracts;
 using Closest.Network.Location.API.Models;
 using Closest.Network.Location.API.Settings.Contracts;
+using Messages.Core;
+using Messages.Core.Extensions;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -35,6 +37,26 @@ namespace Closest.Network.Location.API.Data.Repositories
                                .GetResult()
                                .ToListAsync();
 
+        public async Task<Maybe<GasStation>> FindByExternalIdAsync(string externalId)
+            => await Collection.FindAsync(gasStation => gasStation.ExternalId.Equals(externalId))
+                               .GetAwaiter()
+                               .GetResult()
+                               .FirstOrDefaultAsync();
 
+        public async Task<Response<GasStation>> AddAsync(GasStation gasStation)
+        {
+            var response = Response<GasStation>.Create();
+
+            try
+            {
+                await Collection.InsertOneAsync(gasStation);
+
+                return response.SetValue(gasStation);
+            }
+            catch (Exception ex)
+            {
+                return response.WithCriticalError(ex.ToString());
+            }
+        }
     }
 }

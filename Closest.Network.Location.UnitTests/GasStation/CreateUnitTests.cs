@@ -12,8 +12,9 @@ namespace Closest.Network.Location.UnitTests.GasStation
         public void CreateGasStation_ShouldCreateWithValidParameters()
         {
             var gasStationDto = GasStationDtoFake();
+            var address = AddressFake();
 
-            var response = Model.GasStation.Create(gasStationDto);
+            var response = Model.GasStation.Create(gasStationDto, address);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeFalse();
@@ -27,8 +28,9 @@ namespace Closest.Network.Location.UnitTests.GasStation
         public void CreateGasStation_ShouldCreateWithValidParameters_SiteUrlIsEmpty()
         {
             var gasStationDto = GasStationDtoFake(siteUrl: string.Empty);
+            var address = AddressFake();
 
-            var response = Model.GasStation.Create(gasStationDto);
+            var response = Model.GasStation.Create(gasStationDto, address);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeFalse();
@@ -42,8 +44,9 @@ namespace Closest.Network.Location.UnitTests.GasStation
         public void CreateGasStation_ShouldReturnBusinessError_ExternalIdIsEmpty()
         {
             var gasStationDto = GasStationDtoFake(externalID: string.Empty);
+            var address = AddressFake();
 
-            var response = Model.GasStation.Create(gasStationDto);
+            var response = Model.GasStation.Create(gasStationDto, address);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
@@ -57,8 +60,9 @@ namespace Closest.Network.Location.UnitTests.GasStation
         public void CreateGasStation_ShouldReturnBusinessError_NameIsEmpty()
         {
             var gasStationDto = GasStationDtoFake(name: string.Empty);
+            var address = AddressFake();
 
-            var response = Model.GasStation.Create(gasStationDto);
+            var response = Model.GasStation.Create(gasStationDto, address);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
@@ -72,8 +76,9 @@ namespace Closest.Network.Location.UnitTests.GasStation
         public void CreateGasStation_ShouldReturnBusinessError_PhoneNumberIsEmpty()
         {
             var gasStationDto = GasStationDtoFake(phoneNumber: string.Empty);
+            var address = AddressFake();
 
-            var response = Model.GasStation.Create(gasStationDto);
+            var response = Model.GasStation.Create(gasStationDto, address);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
@@ -88,14 +93,12 @@ namespace Closest.Network.Location.UnitTests.GasStation
         {
             var gasStationDto = GasStationDtoFake();
 
-            gasStationDto.Address = null;
-
-            var response = Model.GasStation.Create(gasStationDto);
+            var response = Model.GasStation.Create(gasStationDto, null);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
             response.Messages.Should().HaveCount(1);
-            response.Messages.Should().Contain(message => message.Property.Equals("Address"));
+            response.Messages.Should().Contain(message => message.Property.Equals("address"));
             response.Data.HasValue.Should().BeFalse();
             response.Data.Value.Should().BeNull();
         }

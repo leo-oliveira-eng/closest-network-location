@@ -121,7 +121,36 @@ namespace Closest.Network.Location.API.Models
 
         bool LongitudeIsValid(double longitude) => longitude <= 180 && longitude >= -180;
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            else if (!(obj is Address))
+                return false;
+
+            return StreetAddress == ((Address)obj).StreetAddress
+                && (Complement == ((Address)obj).Complement)
+                && (Cep == ((Address)obj).Cep)
+                && (City == ((Address)obj).City)
+                && (UF == ((Address)obj).UF);
+        }
+
+        public override int GetHashCode()
+            => StreetAddress.GetHashCode()
+                ^ Complement.GetHashCode()
+                ^ Cep.GetHashCode()
+                ^ City.GetHashCode()
+                ^ UF.GetHashCode();
+
         #endregion
 
+        #region Convertion Operators
+
+        public static implicit operator Address(Maybe<Address> entity) => entity.Value;
+
+        public static implicit operator Address(Response<Address> entity) => entity.Data;
+
+        #endregion
     }
 }

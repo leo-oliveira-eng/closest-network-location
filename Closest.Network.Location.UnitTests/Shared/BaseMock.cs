@@ -15,9 +15,9 @@ namespace Closest.Network.Location.UnitTests.Shared
                 .With(x => x.Complement, complement)
                 .Build();
 
-        public GasStationDto GasStationDtoFake(string externalID = null, string name = null, string phoneNumber = null, string siteUrl = null, Model.Address address = null)
+        public GasStationDto GasStationDtoFake(string externalID = null, string name = null, string phoneNumber = null, string siteUrl = null, AddressDto address = null)
         {
-            var addressFake = address ?? Builder<Model.Address>.CreateNew().Build();
+            var addressFake = address ?? Builder<AddressDto>.CreateNew().Build();
 
             return Builder<GasStationDto>.CreateNew()
                 .With(x => x.ExternalId, externalID ?? "Any ID")
@@ -41,5 +41,20 @@ namespace Closest.Network.Location.UnitTests.Shared
                 .With(x => x.Address, addressFake)
                 .Build();
         }
+
+        public LocationDto LocationDtoFake(double? latitude = null, double? longitude = null)
+            => Builder<LocationDto>.CreateNew()
+                .With(x => x.Longitude, longitude ?? -43)
+                .With(x => x.Latitude, latitude ?? -22)
+                .Build();
+
+        public AddressDto AddressDtoFake(string cep = null, string streetAddress = null, string city = null, string uf = null, string complement = null)
+            => Builder<AddressDto>.CreateNew()
+                .With(x => x.Cep, cep ?? "11111-000")
+                .With(x => x.StreetAddress, streetAddress ?? "Another street")
+                .With(x => x.City, city ?? "Another City")
+                .With(x => x.UF, uf ?? "UF")
+                .With(x => x.Complement, complement)
+                .Build();
     }
 }

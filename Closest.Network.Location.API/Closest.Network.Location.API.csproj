@@ -9,13 +9,15 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Message.Response.Maybe" Version="1.0.0-preview-2" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="MongoDB.Driver" Version="2.11.5" />
+    <PackageReference Include="Moq" Version="4.16.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\ExternalServices\Contracts\" />
+    <Folder Include="Messages\ResponseMessages\" />
   </ItemGroup>
 
 

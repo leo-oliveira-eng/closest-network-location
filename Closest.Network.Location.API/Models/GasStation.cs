@@ -49,19 +49,19 @@ namespace Closest.Network.Location.API.Models
 
         #region Methods
 
-        public static Response<GasStation> Create(GasStationDto dto)
+        public static Response<GasStation> Create(GasStationDto dto, Address address)
         {
             var response = Response<GasStation>.Create();
 
-            var dtoIsValidResponse = IsValidForGasStation(dto);
+            var dataIsValidResponse = IsValidForGasStation(dto, address);
 
-            if (dtoIsValidResponse.HasError)
-                return response.WithMessages(dtoIsValidResponse.Messages);
+            if (dataIsValidResponse.HasError)
+                return response.WithMessages(dataIsValidResponse.Messages);
 
-            return response.SetValue(new GasStation(dto.ExternalId, dto.Name, dto.PhoneNumber, dto.SiteUrl, dto.Address));
+            return response.SetValue(new GasStation(dto.ExternalId, dto.Name, dto.PhoneNumber, dto.SiteUrl, address));
         }
 
-        static Response IsValidForGasStation(GasStationDto dto)
+        static Response IsValidForGasStation(GasStationDto dto, Address address)
         {
             var response = Response.Create();
 
@@ -74,28 +74,36 @@ namespace Closest.Network.Location.API.Models
             if (string.IsNullOrEmpty(dto.PhoneNumber))
                 response.WithBusinessError(nameof(dto.PhoneNumber), $"O campo {nameof(dto.PhoneNumber)} é obrigatório. Rever o credenciado {dto.ExternalId}");
 
-            if (dto.Address is null)
-                response.WithBusinessError(nameof(dto.Address), $"Endereço inválido.. Rever o credenciado {dto.ExternalId}");
+            if (address is null)
+                response.WithBusinessError(nameof(address), $"Endereço inválido.. Rever o credenciado {dto.ExternalId}");
 
             return response;
         }
 
-        public Response Update(GasStationDto dto)
+        public Response Update(GasStationDto dto, Address address)
         {
             var response = Response.Create();
 
-            var dtoIsValidResponse = IsValidForGasStation(dto);
+            var dataIsValidResponse = IsValidForGasStation(dto, address);
 
-            if (dtoIsValidResponse.HasError)
-                return response.WithMessages(dtoIsValidResponse.Messages);
+            if (dataIsValidResponse.HasError)
+                return response.WithMessages(dataIsValidResponse.Messages);
 
             Name = dto.Name;
-            Address = dto.Address;
+            Address = address;
             PhoneNumber = dto.PhoneNumber;
             SiteUrl = dto.SiteUrl;
 
             return response;
         }
+
+        #endregion
+
+        #region Conversion Operators
+
+        public static implicit operator GasStation(Maybe<GasStation> entity) => entity.Value;
+
+        public static implicit operator GasStation(Response<GasStation> entity) => entity.Data;
 
         #endregion
     }

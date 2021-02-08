@@ -15,13 +15,14 @@ namespace Closest.Network.Location.UnitTests.GasStation
         {
             var gasStation = GasStationFake();
             var gasStatioUpdated = GasStationDtoFake();
+            var address = AddressFake();
 
-            var response = gasStation.Update(gasStatioUpdated);
+            var response = gasStation.Update(gasStatioUpdated, address);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeFalse();
             response.Messages.Should().BeEmpty();
-            gasStation.Address.Cep.Should().Be(gasStatioUpdated.Address.Cep);
+            gasStation.Address.Cep.Should().Be(address.Cep);
         }
 
         [TestMethod]
@@ -29,13 +30,14 @@ namespace Closest.Network.Location.UnitTests.GasStation
         {
             var gasStation = GasStationFake();
             var gasStatioUpdated = GasStationDtoFake(siteUrl: string.Empty);
+            var address = AddressFake();
 
-            var response = gasStation.Update(gasStatioUpdated);
+            var response = gasStation.Update(gasStatioUpdated, address);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeFalse();
             response.Messages.Should().BeEmpty();
-            gasStation.Address.Cep.Should().Be(gasStatioUpdated.Address.Cep);
+            gasStation.Address.Cep.Should().Be(address.Cep);
         }
 
         [TestMethod]
@@ -43,8 +45,9 @@ namespace Closest.Network.Location.UnitTests.GasStation
         {
             var gasStation = GasStationFake();
             var gasStatioUpdated = GasStationDtoFake(externalID: string.Empty);
+            var address = AddressFake();
 
-            var response = gasStation.Update(gasStatioUpdated);
+            var response = gasStation.Update(gasStatioUpdated, address);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
@@ -57,8 +60,9 @@ namespace Closest.Network.Location.UnitTests.GasStation
         {
             var gasStation = GasStationFake();
             var gasStatioUpdated = GasStationDtoFake(name: string.Empty);
+            var address = AddressFake();
 
-            var response = gasStation.Update(gasStatioUpdated);
+            var response = gasStation.Update(gasStatioUpdated, address);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
@@ -71,8 +75,9 @@ namespace Closest.Network.Location.UnitTests.GasStation
         {
             var gasStation = GasStationFake();
             var gasStatioUpdated = GasStationDtoFake(phoneNumber: string.Empty);
+            var address = AddressFake();
 
-            var response = gasStation.Update(gasStatioUpdated);
+            var response = gasStation.Update(gasStatioUpdated, address);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
@@ -86,12 +91,12 @@ namespace Closest.Network.Location.UnitTests.GasStation
             var gasStation = GasStationFake();
             var gasStationUpdated = Builder<GasStationDto>.CreateNew().Build();
 
-            var response = gasStation.Update(gasStationUpdated);
+            var response = gasStation.Update(gasStationUpdated, null);
 
             response.Should().NotBeNull();
             response.HasError.Should().BeTrue();
             response.Messages.Should().HaveCount(1);
-            response.Messages.Should().Contain(message => message.Property.Equals("Address"));
+            response.Messages.Should().Contain(message => message.Property.Equals("address"));
         }
     }
 }

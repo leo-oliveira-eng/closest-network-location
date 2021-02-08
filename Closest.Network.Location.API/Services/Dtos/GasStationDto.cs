@@ -12,6 +12,6 @@ namespace Closest.Network.Location.API.Services.Dtos
 
         public string SiteUrl { get; set; }
 
-        public Address Address { get; set; }
+        public AddressDto Address { get; set; }
     }
 }
