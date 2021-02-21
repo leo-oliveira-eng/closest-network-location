@@ -21,7 +21,11 @@ namespace Closest.Network.Location.API.Services.Mappers
                 Address = new AddressDto
                 {
                     Cep = gasStation.Cep,
-
+                    StreetAddress = gasStation.StreetAddress,
+                    City = gasStation.City,
+                    UF = gasStation.UF,
+                    Latitude = gasStation.Latitude,
+                    Longitude = gasStation.Longitude
                 }
             }).ToList();
         }

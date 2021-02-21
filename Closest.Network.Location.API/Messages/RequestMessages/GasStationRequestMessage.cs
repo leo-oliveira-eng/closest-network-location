@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Closest.Network.Location.API.Messages.RequestMessages
 {
-    [DataContract, ]
+    [DataContract]
     public class GasStationRequestMessage
     {
         [DataMember, JsonProperty("id")]

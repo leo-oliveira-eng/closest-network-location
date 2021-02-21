@@ -1,5 +1,7 @@
-﻿using Closest.Network.Location.API.Services.Dtos;
+﻿using Closest.Network.Location.API.Messages.RequestMessages;
+using Closest.Network.Location.API.Services.Dtos;
 using FizzWare.NBuilder;
+using System.Collections.Generic;
 using Model = Closest.Network.Location.API.Models;
 
 namespace Closest.Network.Location.UnitTests.Shared
@@ -55,6 +57,27 @@ namespace Closest.Network.Location.UnitTests.Shared
                 .With(x => x.City, city ?? "Another City")
                 .With(x => x.UF, uf ?? "UF")
                 .With(x => x.Complement, complement)
+                .Build();
+
+        public ImportGasStationRequestMessage ImportGasStationRequestMessageFake(List<GasStationRequestMessage> gasStations = null)
+            => new ImportGasStationRequestMessage
+            {
+                GasStations = gasStations ?? new List<GasStationRequestMessage> { Builder<GasStationRequestMessage>.CreateNew().Build() }
+            };
+
+        public GasStationRequestMessage GasStationRequestMessageFake(string externalId = null, string name = null, string phoneNumber = null, string siteUrl = null, double? latitude = null,
+            double? longitude = null, string streetAddress = null, string city = null, string uf = null, string cep = null)
+            => Builder<GasStationRequestMessage>.CreateNew()
+                .With(x => x.ExternalId, externalId ?? "Any ID")
+                .With(x => x.Name, name ?? "Any Name")
+                .With(x => x.PhoneNumber, phoneNumber ?? "1234-1234")
+                .With(x => x.SiteUrl, siteUrl ?? "any@nothing.com")
+                .With(x => x.Longitude, longitude ?? -43)
+                .With(x => x.Latitude, latitude ?? -22)
+                .With(x => x.Cep, cep ?? "11111-000")
+                .With(x => x.StreetAddress, streetAddress ?? "Another street")
+                .With(x => x.City, city ?? "Another City")
+                .With(x => x.UF, uf ?? "UF")
                 .Build();
     }
 }

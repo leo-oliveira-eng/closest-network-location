@@ -5,7 +5,6 @@ using Closest.Network.Location.API.Models;
 using Closest.Network.Location.API.Services.Dtos;
 using Closest.Network.Location.API.Services.ExternalServices.Contracts;
 using Closest.Network.Location.API.Services.Mappers;
-using Closest.Network.Location.API.Settings.Contracts;
 using Messages.Core;
 using Messages.Core.Extensions;
 using System;
@@ -16,20 +15,16 @@ namespace Closest.Network.Location.API.Services
 {
     public class GasStationService
     {
-        IClosestNetworkLocationSettings Settings { get; }
-        
         IGasStationRepository GasStationRepository { get; }
 
         IGeolocationExternalService GeolocationExternalService { get; }
 
         IGasStationFactory GasStationFactory { get; }
 
-        public GasStationService(IClosestNetworkLocationSettings settings
-            , IGasStationRepository gasStationRepository
+        public GasStationService(IGasStationRepository gasStationRepository
             , IGeolocationExternalService geolocationExternalService
             , IGasStationFactory gasStationFactory)
         {
-            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             GasStationRepository = gasStationRepository ?? throw new ArgumentNullException(nameof(gasStationRepository));
             GeolocationExternalService = geolocationExternalService ?? throw new ArgumentNullException(nameof(geolocationExternalService));
             GasStationFactory = gasStationFactory ?? throw new ArgumentNullException(nameof(gasStationFactory));
@@ -91,10 +86,21 @@ namespace Closest.Network.Location.API.Services
                 if (geocodingResponse.HasError)
                     return response.WithMessages(geocodingResponse.Messages);
 
-                newAddressResponse.Data.Value.SetLocation(geocodingResponse.Data.Value.Longitude, geocodingResponse.Data.Value.Latitude);
+                var updatedAddressResponse = newAddressResponse.Data.Value.SetLocation(geocodingResponse.Data.Value.Longitude, geocodingResponse.Data.Value.Latitude);
+
+                if (updatedAddressResponse.HasError)
+                    return response.WithMessages(updatedAddressResponse.Messages);
             }
 
-            return gasStation.Update(dto, newAddressResponse);
+            var updateGasStationResponse =  gasStation.Update(dto, newAddressResponse);
+
+            if (updateGasStationResponse.HasError)
+                return updateGasStationResponse;
+
+            if (!(await GasStationRepository.UpdadeAsync(gasStation)).IsAcknowledged)
+                return response.WithCriticalError($"Failed to save gas station {gasStation.ExternalId}");
+
+            return response;
         }
 
         private async Task<Response> AddGasStationAsync(GasStationDto dto)

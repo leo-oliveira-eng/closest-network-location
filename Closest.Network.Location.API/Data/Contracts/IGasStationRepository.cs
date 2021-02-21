@@ -1,5 +1,6 @@
 ﻿using Closest.Network.Location.API.Models;
 using Messages.Core;
+using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,5 +13,7 @@ namespace Closest.Network.Location.API.Data.Contracts
         Task<Maybe<GasStation>> FindByExternalIdAsync(string externalId);
 
         Task<Response<GasStation>> AddAsync(GasStation gasStation);
+
+        Task<UpdateResult> UpdadeAsync(GasStation gasStation);
     }
 }

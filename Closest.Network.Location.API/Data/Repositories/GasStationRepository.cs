@@ -58,5 +58,19 @@ namespace Closest.Network.Location.API.Data.Repositories
                 return response.WithCriticalError(ex.ToString());
             }
         }
+
+        public async Task<UpdateResult> UpdadeAsync(GasStation gasStation)
+        {
+            var filter = Builders<GasStation>.Filter.Eq(x => x.Id, gasStation.Id);
+            var update = Builders<GasStation>.Update
+                .Set(nameof(gasStation.ExternalId), gasStation.ExternalId)
+                .Set(nameof(gasStation.Name), gasStation.Name)
+                .Set(nameof(gasStation.PhoneNumber), gasStation.PhoneNumber)
+                .Set(nameof(gasStation.SiteUrl), gasStation.SiteUrl)
+                .Set(nameof(gasStation.Address), gasStation.Address)
+                .CurrentDate(nameof(gasStation.LastUpdate));
+
+            return await Collection.UpdateOneAsync(filter, update);
+        }
     }
 }
