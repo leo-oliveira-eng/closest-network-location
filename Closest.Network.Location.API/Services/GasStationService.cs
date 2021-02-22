@@ -105,5 +105,23 @@ namespace Closest.Network.Location.API.Services
 
         private async Task<Response> AddGasStationAsync(GasStationDto dto)
             => await GasStationFactory.CreateAsync(dto);
+
+        public async Task<Response> RemoveAsync(string externalId)
+        {
+            var response = Response.Create();
+
+            if (string.IsNullOrEmpty(externalId))
+                return response.WithBusinessError($"{nameof(externalId)} is invalid");
+
+            var gasStation = await GasStationRepository.FindByExternalIdAsync(externalId);
+
+            if (!gasStation.HasValue)
+                return response.WithBusinessError("Not found");
+
+            if (!(await GasStationRepository.DeleteAsync(gasStation.Value)).IsAcknowledged)
+                return response.WithCriticalError($"Failed to delete gas station {externalId}");
+
+            return response;
+        }
     }
 }

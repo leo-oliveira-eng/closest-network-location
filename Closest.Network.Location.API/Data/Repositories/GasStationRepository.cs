@@ -72,5 +72,15 @@ namespace Closest.Network.Location.API.Data.Repositories
 
             return await Collection.UpdateOneAsync(filter, update);
         }
+
+        public async Task<UpdateResult> DeleteAsync(GasStation gasStation)
+        {
+            var filter = Builders<GasStation>.Filter.Eq(_ => _.ExternalId, gasStation.ExternalId);
+            var update = Builders<GasStation>.Update
+                .CurrentDate(nameof(gasStation.DeletedAt))
+                .CurrentDate(nameof(gasStation.LastUpdate));
+
+            return await Collection.UpdateOneAsync(filter, update);
+        }
     }
 }

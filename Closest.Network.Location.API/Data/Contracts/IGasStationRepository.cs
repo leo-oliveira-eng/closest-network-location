@@ -15,5 +15,7 @@ namespace Closest.Network.Location.API.Data.Contracts
         Task<Response<GasStation>> AddAsync(GasStation gasStation);
 
         Task<UpdateResult> UpdadeAsync(GasStation gasStation);
+
+        Task<UpdateResult> DeleteAsync(GasStation gasStation);
     }
 }
