@@ -75,21 +75,10 @@ namespace Closest.Network.Location.API.Services
 
             if (!newAddressResponse.Equals(gasStation.Address))
             {
-                var address = $"{newAddressResponse.Data.Value.StreetAddress}"
-                    + $"+{(!string.IsNullOrEmpty(newAddressResponse.Data.Value.Complement) ? $"{newAddressResponse.Data.Value.Complement}," : string.Empty)}"
-                    + $"+{newAddressResponse.Data.Value.City}"
-                    + $"+{newAddressResponse.Data.Value.UF}"
-                    + $"CEP: {newAddressResponse.Data.Value.Cep}";
+                var updateAddresResponse = await UpdateAddressAsync(newAddressResponse);
 
-                var geocodingResponse = await GeolocationExternalService.GetGeolocationAsync(address);
-
-                if (geocodingResponse.HasError)
-                    return response.WithMessages(geocodingResponse.Messages);
-
-                var updatedAddressResponse = newAddressResponse.Data.Value.SetLocation(geocodingResponse.Data.Value.Longitude, geocodingResponse.Data.Value.Latitude);
-
-                if (updatedAddressResponse.HasError)
-                    return response.WithMessages(updatedAddressResponse.Messages);
+                if (updateAddresResponse.HasError)
+                    return updateAddresResponse;
             }
 
             var updateGasStationResponse =  gasStation.Update(dto, newAddressResponse);
@@ -101,6 +90,24 @@ namespace Closest.Network.Location.API.Services
                 return response.WithCriticalError($"Failed to save gas station {gasStation.ExternalId}");
 
             return response;
+        }
+
+        private async Task<Response> UpdateAddressAsync(Address newAddress)
+        {
+            var response = Response.Create();
+
+            var address = $"{newAddress.StreetAddress}"
+                    + $"+{(!string.IsNullOrEmpty(newAddress.Complement) ? $"{newAddress.Complement}," : string.Empty)}"
+                    + $"+{newAddress.City}"
+                    + $"+{newAddress.UF}"
+                    + $"CEP: {newAddress.Cep}";
+
+            var geocodingResponse = await GeolocationExternalService.GetGeolocationAsync(address);
+
+            if (geocodingResponse.HasError)
+                return response.WithMessages(geocodingResponse.Messages);
+
+            return newAddress.SetLocation(geocodingResponse.Data.Value.Longitude, geocodingResponse.Data.Value.Latitude);
         }
 
         private async Task<Response> AddGasStationAsync(GasStationDto dto)
@@ -123,5 +130,7 @@ namespace Closest.Network.Location.API.Services
 
             return response;
         }
+
+
     }
 }
