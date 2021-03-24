@@ -1,6 +1,7 @@
 ﻿using Closest.Network.Location.API.Data.Contracts;
 using Closest.Network.Location.API.Factories.Contracts;
 using Closest.Network.Location.API.Messages.RequestMessages;
+using Closest.Network.Location.API.Messages.ResponseMessages;
 using Closest.Network.Location.API.Models;
 using Closest.Network.Location.API.Services.Dtos;
 using Closest.Network.Location.API.Services.ExternalServices.Contracts;
@@ -131,6 +132,43 @@ namespace Closest.Network.Location.API.Services
             return response;
         }
 
+        public async Task<Response<GetGasStationResponseMessage>> GetGasStationsAsync(GetGasStationRequestMessage requestMessage)
+        {
+            var response = Response<GetGasStationResponseMessage>.Create();
 
+            if (requestMessage is null)
+                return response.WithBusinessError("Search data was not reported or invalid");
+
+            var isCoordinateSearch = double.TryParse(requestMessage.Latitude, out var latitude) & double.TryParse(requestMessage.Longitude, out var longitude);
+
+            if (string.IsNullOrEmpty(requestMessage.Address) && !isCoordinateSearch)
+                return response.WithBusinessError(nameof(requestMessage.Address), "It is necessary to inform the address to be searched or latitude and longitude coordinates");
+
+            var geolocation = isCoordinateSearch
+                ? GetLocationDto.Create(latitude, longitude)
+                : await GetGeocodingAsync(requestMessage.Address);
+
+            if (geolocation.HasError)
+                return response.WithMessages(geolocation.Messages);
+
+            var gasStationsResponse = await GasStationRepository.GetGasStationsByLocationAsync(geolocation.Data.Value);
+
+            if (gasStationsResponse.HasError)
+                return response.WithMessages(gasStationsResponse.Messages);
+
+            return response.SetValue(gasStationsResponse.Data.Value.ToGetGasStationResponseMessage(geolocation.Data.Value));
+        }
+
+        async Task<Response<GetLocationDto>> GetGeocodingAsync(string address)
+        {
+            var response = Response<GetLocationDto>.Create();
+
+            var geocodingResponse = await GeolocationExternalService.GetGeolocationAsync(address);
+
+            if (geocodingResponse.HasError)
+                return response.WithMessages(geocodingResponse.Messages);
+
+            return response.SetValue(geocodingResponse.Data.Value.ToGetLocationDto());
+        }
     }
 }

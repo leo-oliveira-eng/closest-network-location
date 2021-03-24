@@ -1,11 +1,14 @@
 ﻿using Closest.Network.Location.API.Data.Contracts;
 using Closest.Network.Location.API.Models;
+using Closest.Network.Location.API.Services.Dtos;
 using Closest.Network.Location.API.Settings.Contracts;
 using Messages.Core;
 using Messages.Core.Extensions;
 using MongoDB.Driver;
+using MongoDB.Driver.GeoJsonObjectModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Closest.Network.Location.API.Data.Repositories
@@ -81,6 +84,35 @@ namespace Closest.Network.Location.API.Data.Repositories
                 .CurrentDate(nameof(gasStation.LastUpdate));
 
             return await Collection.UpdateOneAsync(filter, update);
+        }
+
+        public async Task<Response<List<GasStation>>> GetGasStationsByLocationAsync(GetLocationDto location)
+        {
+            var response = Response<List<GasStation>>.Create();
+
+            if (location is null)
+                response.WithBusinessError("Coordinates are invalid");
+
+            var maxDistance = Settings.GeocoddingSettings.BaseRadius;
+
+            var customerLocation = new GeoJsonPoint<GeoJson2DGeographicCoordinates>(new GeoJson2DGeographicCoordinates(location.Longitude, location.Latitude));
+
+            var gasStations = new List<GasStation>();
+
+            while (!gasStations.Any() && maxDistance <= 15000)
+            {
+                var filter = Builders<GasStation>.Filter.Near(x => x.Address.Location, customerLocation, maxDistance)
+                    & Builders<GasStation>.Filter.Eq(x => x.DeletedAt, null);
+
+                gasStations = await Collection.FindAsync(filter)
+                    .GetAwaiter()
+                    .GetResult()
+                    .ToListAsync();
+
+                maxDistance += 5000;
+            }
+
+            return gasStations;
         }
     }
 }

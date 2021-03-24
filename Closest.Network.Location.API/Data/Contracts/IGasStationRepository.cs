@@ -1,4 +1,5 @@
 ﻿using Closest.Network.Location.API.Models;
+using Closest.Network.Location.API.Services.Dtos;
 using Messages.Core;
 using MongoDB.Driver;
 using System.Collections.Generic;
@@ -17,5 +18,7 @@ namespace Closest.Network.Location.API.Data.Contracts
         Task<UpdateResult> UpdadeAsync(GasStation gasStation);
 
         Task<UpdateResult> DeleteAsync(GasStation gasStation);
+
+        Task<Response<List<GasStation>>> GetGasStationsByLocationAsync(GetLocationDto location);
     }
 }

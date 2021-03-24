@@ -7,5 +7,9 @@
         public string GeocodeApiBaseSetting { get; set; }
 
         public string GeocodeApiKey { get; set; }
+
+        public int BaseRadius { get; set; }
+
+        public int MaxRadius { get; set; }
     }
 }

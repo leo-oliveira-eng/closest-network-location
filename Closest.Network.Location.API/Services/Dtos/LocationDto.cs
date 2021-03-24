@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace Closest.Network.Location.API.Services.Dtos
 {

@@ -8,13 +8,14 @@ namespace Closest.Network.Location.UnitTests.Shared
 {
     public class BaseMock
     {
-        public Model.Address AddressFake(string cep = null, string streetAddress = null, string city = null, string uf = null, string complement = null)
+        public Model.Address AddressFake(string cep = null, string streetAddress = null, string city = null, string uf = null, string complement = null, double[] location = null)
             => Builder<Model.Address>.CreateNew()
                 .With(x => x.Cep, cep ?? "11111-000")
                 .With(x => x.StreetAddress, streetAddress ?? "Another street")
                 .With(x => x.City, city ?? "Another City")
                 .With(x => x.UF, uf ?? "UF")
                 .With(x => x.Complement, complement)
+                .With(x => x.Location, location ?? new double[] { -43, -22 } )
                 .Build();
 
         public GasStationDto GasStationDtoFake(string externalID = null, string name = null, string phoneNumber = null, string siteUrl = null, AddressDto address = null)
@@ -32,7 +33,7 @@ namespace Closest.Network.Location.UnitTests.Shared
 
         public Model.GasStation GasStationFake(string id = null, string externalId = null, string name = null, string phoneNumber = null, string siteUrl = null, Model.Address address = null)
         {
-            var addressFake = address ?? Builder<Model.Address>.CreateNew().Build();
+            var addressFake = address ?? AddressFake();
 
             return Builder<Model.GasStation>.CreateNew()
                 .With(x => x.Id, id ?? "some id")
